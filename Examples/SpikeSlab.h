@@ -1,5 +1,5 @@
-#ifndef Examples_SpikeSlab_h
-#define Examples_SpikeSlab_h
+#ifndef ClassicNS_Examples_SpikeSlab_h
+#define ClassicNS_Examples_SpikeSlab_h
 
 #include "../Tools/RNG.hpp"
 #include <string>
