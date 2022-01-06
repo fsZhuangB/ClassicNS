@@ -4,7 +4,7 @@
 #include "../Tools/RNG.hpp"
 #include <string>
 
-namespace SimpleNS
+namespace ClassicNS
 {
 
 class SpikeSlab

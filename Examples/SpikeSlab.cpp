@@ -2,7 +2,7 @@
 #include "../Tools/Misc.hpp"
 #include <iomanip>
 
-namespace SimpleNS
+namespace ClassicNS
 {
 
 SpikeSlab::SpikeSlab(Tools::RNG& rng)
