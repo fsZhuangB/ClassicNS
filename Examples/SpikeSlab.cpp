@@ -1,5 +1,6 @@
 #include "SpikeSlab.h"
 #include "../Tools/Misc.hpp"
+#include <iomanip>
 
 namespace SimpleNS
 {
@@ -38,6 +39,19 @@ double SpikeSlab::log_likelihood() const
     }
 
     return Tools::logsumexp({slab, 100.0*spike});
+}
+
+std::string SpikeSlab::to_string() const
+{
+    std::stringstream ss;
+    ss << std::setprecision(16);
+    for(size_t i=0; i<params.size(); ++i)
+    {
+        ss << params[i];
+        if(i != params.size() - 1)
+            ss << ',';
+    }
+    return ss.str();
 }
 
 } // namespace
