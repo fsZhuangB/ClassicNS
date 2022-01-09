@@ -17,6 +17,7 @@ class Sampler
         // The particles and their log-likelihoods
         std::vector<T> particles;
         std::vector<double> log_likelihoods;
+        std::vector<double> tiebreakers;
 
     public:
         Sampler() = delete;
