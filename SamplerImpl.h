@@ -10,6 +10,8 @@ namespace ClassicNS
 template<typename T>
 Sampler<T>::Sampler(int rng_seed)
 :rng(rng_seed)
+,threshold_logl(-1E300)
+,threshold_tiebreaker(0.0)
 {
     std::cout << "Initialising sampler." << std::endl;
     std::cout << "Generating particles from the prior..." << std::flush;

@@ -19,6 +19,10 @@ class Sampler
         std::vector<double> log_likelihoods;
         std::vector<double> tiebreakers;
 
+        // The likelihood threshold
+        double threshold_logl;
+        double threshold_tiebreaker;
+
     public:
         Sampler() = delete;
         Sampler(int rng_seed);
