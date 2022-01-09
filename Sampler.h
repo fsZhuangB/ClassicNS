@@ -11,6 +11,9 @@ class Sampler
 {
     private:
 
+        // Iteration counter
+        int iteration;
+
         // RNG to use (local to this sampler)
         Tools::RNG rng;
 
