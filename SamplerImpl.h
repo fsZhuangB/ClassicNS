@@ -31,6 +31,21 @@ Sampler<T>::Sampler(int rng_seed)
 }
 
 
+template<typename T>
+int Sampler<T>::find_worst() const
+{
+    // Use a simple scan.
+    int worst = 0;
+
+    for(int i=1; i<num_particles; ++i)
+        if(log_likelihoods[i] < log_likelihoods[worst] ||
+            (log_likelihoods[i] == log_likelihoods[worst] &&
+             tiebreakers[i] < tiebreakers[worst]))
+            worst = i;
+
+    return worst;
+}
+
 } // namespace
 
 #endif

@@ -26,6 +26,9 @@ class Sampler
         double threshold_logl;
         double threshold_tiebreaker;
 
+        // Find and return the index of the worst particle
+        int find_worst() const;
+
     public:
         Sampler() = delete;
         Sampler(int rng_seed);
