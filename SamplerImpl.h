@@ -15,9 +15,11 @@ Sampler<T>::Sampler(int rng_seed)
 ,threshold_tiebreaker(0.0)
 {
     std::cout << "Initialising sampler." << std::endl;
-    database.get_db() << "BEGIN;";
-    database.get_db() << "INSERT INTO sampler_info VALUES (?);" << rng_seed;
-    database.get_db() << "COMMIT;";
+
+    auto& db = database.get_db();
+    db << "BEGIN;";
+    db << "INSERT INTO sampler_info VALUES (?);" << rng_seed;
+    db << "COMMIT;";
 
     std::cout << "Generating particles from the prior..." << std::flush;
 
@@ -48,6 +50,51 @@ int Sampler<T>::find_worst() const
             worst = i;
 
     return worst;
+}
+
+
+template<typename T>
+void Sampler<T>::do_iteration()
+{
+    ++iteration;
+
+    // Save the worst particle
+    int worst = find_worst();
+    auto& db = database.get_db();
+    db << "BEGIN;";
+    db << "INSERT INTO particles VALUES (?, ?, ?, ?);"
+       << iteration << particles[worst].to_string()
+       << log_likelihoods[worst] << tiebreakers[worst];
+    db << "COMMIT;";
+
+    // Update the threshold
+    threshold_logl = log_likelihoods[worst];
+    threshold_tiebreaker = tiebreakers[worst];
+
+    // Generate a new particle above the threshold
+    // Later this will be done peer to peer
+    if(num_particles > 1)
+    {
+        int clone;
+        while(true)
+        {
+            clone = rng.rand_int(num_particles);
+            if(clone != worst)
+                break;
+        }
+        particles[worst]   = particles[clone];
+        log_likelihoods[worst] = log_likelihoods[clone];
+        tiebreakers[worst] = tiebreakers[clone];
+    }
+
+    // Do MCMC to refresh the particle
+    refresh_particle(worst);
+}
+
+
+template<typename T>
+void Sampler<T>::refresh_particle(int k)
+{
 }
 
 } // namespace

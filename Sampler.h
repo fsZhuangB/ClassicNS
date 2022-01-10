@@ -33,6 +33,12 @@ class Sampler
         // Find and return the index of the worst particle
         int find_worst() const;
 
+        // Do one iteration
+        void do_iteration();
+
+        // Refresh a particle with MCMC
+        void refresh_particle(int k);
+
     public:
         Sampler() = delete;
         Sampler(int rng_seed);
