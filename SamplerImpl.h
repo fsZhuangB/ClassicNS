@@ -95,7 +95,7 @@ void Sampler<T>::do_iteration()
     // Do MCMC to refresh the particle
     int accepted = refresh_particle(worst);
     std::cout << "done. Acceptance rate = ";
-    std::cout << accepted << '/' << mcmc_steps << '.' << std::endl;
+    std::cout << accepted << '/' << mcmc_steps << ".\n" << std::endl;
 }
 
 
