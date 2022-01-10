@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Constants.h"
+#include "Tools/Misc.hpp"
 
 namespace ClassicNS
 {
@@ -58,6 +59,8 @@ void Sampler<T>::do_iteration()
 {
     ++iteration;
 
+    std::cout << "Iteration " << iteration << ".\n";
+
     // Save the worst particle
     int worst = find_worst();
     auto& db = database.get_db();
@@ -71,8 +74,13 @@ void Sampler<T>::do_iteration()
     threshold_logl = log_likelihoods[worst];
     threshold_tiebreaker = tiebreakers[worst];
 
+    std::cout << "(log_likelihood, tiebreaker) = (";
+    std::cout << log_likelihoods[worst] << ", " << tiebreakers[worst] << ").";
+    std::cout << std::endl;
+
     // Generate a new particle above the threshold
     // Later this will be done peer to peer
+    std::cout << "Generating new particle..." << std::endl;
     if(num_particles > 1)
     {
         int clone;
@@ -88,13 +96,41 @@ void Sampler<T>::do_iteration()
     }
 
     // Do MCMC to refresh the particle
-    refresh_particle(worst);
+    int accepted = refresh_particle(worst);
+    std::cout << "done. Acceptance rate = ";
+    std::cout << accepted << '/' << mcmc_steps << '.' << std::endl;
 }
 
 
 template<typename T>
-void Sampler<T>::refresh_particle(int k)
+int Sampler<T>::refresh_particle(int k)
 {
+    int accepted = 0;
+
+    // This is the Metropolis algorithm to sample the prior above the threshold.
+    for(int i=0; i<num_particles; ++i)
+    {
+        T proposal = particles[k];
+        double logh = proposal.perturb();
+        if(rng.rand() <= exp(logh))
+        {
+            double proposal_logl = proposal.log_likelihood();
+            double proposal_tb   = tiebreakers[k];
+            proposal_tb += rng.randh();
+            Tools::wrap(proposal_tb);
+            if(proposal_logl > threshold_logl ||
+                (proposal_logl == threshold_logl &&
+                 proposal_tb   >  threshold_tiebreaker))
+            {
+                particles[k] = proposal;
+                log_likelihoods[k] = proposal_logl;
+                tiebreakers[k] = proposal_tb;
+                ++accepted;
+            }
+        }
+    }
+
+    return accepted;
 }
 
 } // namespace

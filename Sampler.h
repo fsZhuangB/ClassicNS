@@ -37,7 +37,7 @@ class Sampler
         void do_iteration();
 
         // Refresh a particle with MCMC
-        void refresh_particle(int k);
+        int refresh_particle(int k);
 
     public:
         Sampler() = delete;
