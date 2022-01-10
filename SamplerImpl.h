@@ -15,6 +15,10 @@ Sampler<T>::Sampler(int rng_seed)
 ,threshold_tiebreaker(0.0)
 {
     std::cout << "Initialising sampler." << std::endl;
+    database.get_db() << "BEGIN;";
+    database.get_db() << "INSERT INTO sampler_info VALUES (?);" << rng_seed;
+    database.get_db() << "COMMIT;";
+
     std::cout << "Generating particles from the prior..." << std::flush;
 
     // TODO: Implement this
