@@ -29,6 +29,7 @@ double SpikeSlab::log_likelihood() const
     static constexpr double c_u = -0.5*log(2*M_PI*u*u);
     static constexpr double c_v = -0.5*log(2*M_PI*v*v);
     static constexpr double shift = 0.031;
+    static constexpr double log_100 = log(100.0);
 
     double slab  = 0.0;
     double spike = 0.0;
@@ -38,7 +39,7 @@ double SpikeSlab::log_likelihood() const
         spike += c_v - 0.5*tau_v*pow(x - 0.5 - shift, 2);
     }
 
-    return Tools::logsumexp({slab, 100.0*spike});
+    return Tools::logsumexp({slab, log_100 + spike});
 }
 
 std::string SpikeSlab::to_string() const
