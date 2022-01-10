@@ -1,6 +1,7 @@
 #ifndef ClassicNS_Sampler_h
 #define ClassicNS_Sampler_h
 
+#include "SqliteDB.h"
 #include "Tools/RNG.hpp"
 
 namespace ClassicNS
@@ -10,6 +11,9 @@ template<typename T>
 class Sampler
 {
     private:
+
+        // Output database connection
+        SqliteDB database;
 
         // Iteration counter
         int iteration;
