@@ -18,11 +18,10 @@ Sampler<T>::Sampler(int rng_seed)
     std::cout << "Initialising sampler." << std::endl;
 
     auto& db = database.get_db();
-    db << "BEGIN;";
     db << "INSERT INTO sampler_info VALUES (?);" << rng_seed;
-    db << "COMMIT;";
 
-    std::cout << "Generating particles from the prior..." << std::flush;
+    std::cout << "Generating " << num_particles;
+    std::cout << " particles from the prior..." << std::flush;
 
     // TODO: Implement this
     for(int i=0; i<num_particles; ++i)
@@ -34,7 +33,7 @@ Sampler<T>::Sampler(int rng_seed)
         tiebreakers.emplace_back(rng.rand());
     }
 
-    std::cout << "done." << std::endl;
+    std::cout << "done.\n" << std::endl;
 }
 
 
@@ -64,11 +63,9 @@ void Sampler<T>::do_iteration()
     // Save the worst particle
     int worst = find_worst();
     auto& db = database.get_db();
-    db << "BEGIN;";
     db << "INSERT INTO particles VALUES (?, ?, ?, ?);"
        << iteration << particles[worst].to_string()
        << log_likelihoods[worst] << tiebreakers[worst];
-    db << "COMMIT;";
 
     // Update the threshold
     threshold_logl = log_likelihoods[worst];
@@ -111,7 +108,7 @@ int Sampler<T>::refresh_particle(int k)
     for(int i=0; i<num_particles; ++i)
     {
         T proposal = particles[k];
-        double logh = proposal.perturb();
+        double logh = proposal.perturb(rng);
         if(rng.rand() <= exp(logh))
         {
             double proposal_logl = proposal.log_likelihood();
@@ -131,6 +128,14 @@ int Sampler<T>::refresh_particle(int k)
     }
 
     return accepted;
+}
+
+template<typename T>
+void Sampler<T>::run_to_depth(double nats)
+{
+    int iterations = nats * num_particles;
+    for(int i=0; i<iterations; ++i)
+        do_iteration();
 }
 
 } // namespace

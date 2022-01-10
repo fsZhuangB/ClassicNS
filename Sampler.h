@@ -42,7 +42,7 @@ class Sampler
     public:
         Sampler() = delete;
         Sampler(int rng_seed);
-
+        void run_to_depth(double nats);
 };
 
 } // namespace
