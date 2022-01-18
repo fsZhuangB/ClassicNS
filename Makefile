@@ -1,5 +1,5 @@
-CXX = g++
-FLAGS = -std=c++20 -O3 -march=native -Wall -Wextra -pedantic
+CXX = g++-9
+FLAGS = -std=c++2a -O3 -march=native -Wall -Wextra -pedantic
 
 default:
 	$(CXX) $(FLAGS) -c SqliteDB.cpp
