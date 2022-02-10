@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include "Examples/SpikeSlab.h"
 #include "Sampler.h"
@@ -7,7 +8,7 @@ using Model = SpikeSlab;
 
 int main()
 {
-    Sampler<Model> sampler(123);
+    Sampler<Model> sampler(time(0));
     sampler.run_to_depth(100.0);
     return 0;
 }
