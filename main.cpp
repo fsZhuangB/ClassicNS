@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <ctime>
 #include "Examples/SpikeSlab.h"

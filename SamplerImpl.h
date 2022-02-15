@@ -18,7 +18,8 @@ Sampler<T>::Sampler(int rng_seed)
     std::cout << "Initialising sampler." << std::endl;
 
     auto& db = database.get_db();
-    db << "INSERT INTO sampler_info VALUES (?);" << rng_seed;
+    db << "INSERT INTO sampler_info VALUES (?, ?, ?);"
+       << rng_seed << num_particles << mcmc_steps;
 
     std::cout << "Generating " << num_particles;
     std::cout << " particles from the prior..." << std::flush;
@@ -105,7 +106,7 @@ int Sampler<T>::refresh_particle(int k)
     int accepted = 0;
 
     // This is the Metropolis algorithm to sample the prior above the threshold.
-    for(int i=0; i<num_particles; ++i)
+    for(int i=0; i<mcmc_steps; ++i)
     {
         T proposal = particles[k];
         double logh = proposal.perturb(rng);
@@ -136,6 +137,8 @@ void Sampler<T>::run_to_depth(double nats)
     int iterations = nats * num_particles;
     for(int i=0; i<iterations; ++i)
         do_iteration();
+
+    std::cout << "ln(Z) = " << database.compute_ln_z() << '.' << std::endl;
 }
 
 } // namespace

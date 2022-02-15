@@ -18,6 +18,9 @@ class SqliteDB
 
         // Get reference to underlying connection - use with care.
         sqlite::database& get_db();
+
+        // Compute ln(Z)
+        double compute_ln_z();
 };
 
 } // namespace
