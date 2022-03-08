@@ -9,7 +9,7 @@
 namespace ClassicNS
 {
 
-    static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+    static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
     {
         ((std::string *)userp)->append((char *)contents, size * nmemb);
         return size * nmemb;
@@ -57,7 +57,7 @@ namespace ClassicNS
     }
 
     template <typename T>
-    std::string& Sampler<T>::get_val(double query)
+    std::string Sampler<T>::get_val(double query)
     {
         CURL *curl;
         CURLcode res;
@@ -67,11 +67,15 @@ namespace ClassicNS
         if (curl)
         {
             curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:5000/");
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &params);
-
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "query=-93.88701485340454&submit=Submit");
-
+            std::string q = std::to_string(query);
+            // std::cout << q << std::endl;
+            std::string all_query = "query=" + q + "&submit=Submit";
+            // std::cout << all_query << std::endl;
+            
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, all_query.c_str());
+            //curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "query=-93.88701485340454&submit=Submit");
             res = curl_easy_perform(curl);
 
             /* Check for errors */
@@ -84,6 +88,7 @@ namespace ClassicNS
         curl_global_cleanup();
         return params;
     }
+    
     template <typename T>
     void Sampler<T>::do_iteration()
     {

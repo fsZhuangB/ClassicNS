@@ -38,12 +38,13 @@ class Sampler
 
         // Refresh a particle with MCMC
         int refresh_particle(int k);
-        std::string& get_val(double query);
 
     public:
         Sampler() = delete;
         Sampler(int rng_seed);
         void run_to_depth(double nats);
+        std::string get_val(double query);
+
 };
 
 } // namespace
