@@ -4,3 +4,7 @@
 [submodule "sqlite_modern_cpp"]
 	path = sqlite_modern_cpp
 	url = https://github.com/SqliteModernCpp/sqlite_modern_cpp
+[submodule "extern/pybind11"]
+	path = extern/pybind11
+	url = ../../pybind/pybind11
+	branch = stable

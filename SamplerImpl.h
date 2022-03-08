@@ -132,13 +132,28 @@ int Sampler<T>::refresh_particle(int k)
 }
 
 template<typename T>
-void Sampler<T>::run_to_depth(double nats)
+double Sampler<T>::run_to_depth(double nats)
 {
     int iterations = nats * num_particles;
+    double lnZ;
     for(int i=0; i<iterations; ++i)
         do_iteration();
+    lnZ = database.compute_ln_z();
+    std::cout << "ln(Z) = " << lnZ << '.' << std::endl;
+    return lnZ;
+}
 
-    std::cout << "ln(Z) = " << database.compute_ln_z() << '.' << std::endl;
+template<typename T>
+double Sampler<T>::cal_mse(std::vector<double>& all_lnZ)
+{
+    auto const count = static_cast<float>(all_lnZ.size());
+    int sum = 0;
+    for (auto& lnZ:all_lnZ)
+    {
+        // the true value of evidence for Spikeslab problem is Z = 1 or logZ = 0
+        sum += pow(4.615121-lnZ, 2);
+    }
+    return sum / count;
 }
 
 } // namespace

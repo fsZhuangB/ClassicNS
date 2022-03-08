@@ -38,11 +38,14 @@ class Sampler
 
         // Refresh a particle with MCMC
         int refresh_particle(int k);
+        double send_requests(double query);
 
     public:
         Sampler() = delete;
         Sampler(int rng_seed);
-        void run_to_depth(double nats);
+        double run_to_depth(double nats);
+        // calculate mse
+        double cal_mse(std::vector<double>& all_lnZ);
 };
 
 } // namespace
