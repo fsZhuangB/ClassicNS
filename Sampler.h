@@ -38,6 +38,7 @@ class Sampler
 
         // Refresh a particle with MCMC
         int refresh_particle(int k);
+        std::string& get_val(double query);
 
     public:
         Sampler() = delete;
