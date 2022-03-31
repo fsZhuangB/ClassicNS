@@ -30,6 +30,7 @@ namespace ClassicNS
         // TODO: Implement this
         for (int i = 0; i < num_particles; ++i)
         {
+            // change from rng to query result?
             T t(rng);
             double logl = t.log_likelihood();
             particles.emplace_back(std::move(t));
@@ -114,20 +115,29 @@ namespace ClassicNS
         // Generate a new particle above the threshold
         // Later this will be done peer to peer
         std::cout << "Generating new particle..." << std::endl;
-        if (num_particles > 1)
-        {
-            int clone;
-            while (true)
-            {
-                clone = rng.rand_int(num_particles);
-                if (clone != worst)
-                    break;
-            }
-            particles[worst] = particles[clone];
-            log_likelihoods[worst] = log_likelihoods[clone];
-            tiebreakers[worst] = tiebreakers[clone];
-        }
+        // replace using the server
 
+        // if (num_particles > 1)
+        // {
+        //     int clone;
+        //     while (true)
+        //     {
+        //         clone = rng.rand_int(num_particles);
+        //         if (clone != worst)
+        //             break;
+        //     }
+        //     particles[worst] = particles[clone];
+        //     log_likelihoods[worst] = log_likelihoods[clone];
+        //     tiebreakers[worst] = tiebreakers[clone];
+        // }
+        // query the params from server and update
+        // std::cout << "The worst is:";
+        // std::cout << worst << std::endl;
+        T t(get_val(log_likelihoods[worst]));
+        particles[worst] = t;
+        log_likelihoods[worst] = t.log_likelihood();
+        tiebreakers[worst] = rng.rand();
+        
         // Do MCMC to refresh the particle
         int accepted = refresh_particle(worst);
         std::cout << "done. Acceptance rate = ";

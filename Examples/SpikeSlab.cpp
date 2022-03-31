@@ -12,6 +12,21 @@ SpikeSlab::SpikeSlab(Tools::RNG& rng)
         param = rng.rand();
 }
 
+SpikeSlab::SpikeSlab(const std::string& s)
+{
+    std::stringstream ss(s);
+    std::string temp;
+    while (ss >> temp)
+    {
+        params.emplace_back(std::stod(temp));
+    }
+    // for test
+    for (double& param:params)
+    {
+        std::cout << param << " ";
+    }
+}
+
 double SpikeSlab::perturb(Tools::RNG& rng)
 {
     int k = rng.rand_int(params.size());
