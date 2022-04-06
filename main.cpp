@@ -10,7 +10,7 @@ using Model = SpikeSlab;
 
 int main()
 {
-    const int iter = 1;
+    const int iter = 10;
     std::vector<double> all_lnZ;
 
     // run iter times

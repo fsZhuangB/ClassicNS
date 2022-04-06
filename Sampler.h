@@ -46,7 +46,6 @@ class Sampler
         double run_to_depth(double nats);
         // calculate mse
         double cal_mse(std::vector<double>& all_lnZ);
-        void run_to_depth(double nats);
         std::string get_val(double query);
 
 };

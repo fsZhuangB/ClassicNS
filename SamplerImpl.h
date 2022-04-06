@@ -8,6 +8,11 @@
 
 namespace ClassicNS
 {
+    static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
+    {
+        ((std::string *)userp)->append((char *)contents, size * nmemb);
+        return size * nmemb;
+    }
 
 template<typename T>
 Sampler<T>::Sampler(int rng_seed)
@@ -25,26 +30,6 @@ Sampler<T>::Sampler(int rng_seed)
     std::cout << "Generating " << num_particles;
     std::cout << " particles from the prior..." << std::flush;
 
-    // TODO: Implement this
-    for(int i=0; i<num_particles; ++i)
-    static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
-    {
-        ((std::string *)userp)->append((char *)contents, size * nmemb);
-        return size * nmemb;
-    }
-
-    template <typename T>
-    Sampler<T>::Sampler(int rng_seed)
-        : iteration(0), rng(rng_seed), threshold_logl(-1E300), threshold_tiebreaker(0.0)
-    {
-        std::cout << "Initialising sampler." << std::endl;
-
-        auto &db = database.get_db();
-        db << "INSERT INTO sampler_info VALUES (?);" << rng_seed;
-
-        std::cout << "Generating " << num_particles;
-        std::cout << " particles from the prior..." << std::flush;
-
         // TODO: Implement this
         for (int i = 0; i < num_particles; ++i)
         {
@@ -58,7 +43,7 @@ Sampler<T>::Sampler(int rng_seed)
 
         std::cout << "done.\n"
                   << std::endl;
-    }
+}
 
     template <typename T>
     int Sampler<T>::find_worst() const
@@ -165,12 +150,6 @@ Sampler<T>::Sampler(int rng_seed)
                   << std::endl;
     }
 
-    // Do MCMC to refresh the particle
-    int accepted = refresh_particle(worst);
-    std::cout << "done. Acceptance rate = ";
-    std::cout << accepted << '/' << mcmc_steps << ".\n" << std::endl;
-}
-
 
 template<typename T>
 int Sampler<T>::refresh_particle(int k)
@@ -179,14 +158,7 @@ int Sampler<T>::refresh_particle(int k)
 
     // This is the Metropolis algorithm to sample the prior above the threshold.
     for(int i=0; i<mcmc_steps; ++i)
-    template <typename T>
-    int Sampler<T>::refresh_particle(int k)
     {
-        int accepted = 0;
-
-        // This is the Metropolis algorithm to sample the prior above the threshold.
-        for (int i = 0; i<mcmc_steps; ++i)
-        {
             T proposal = particles[k];
             double logh = proposal.perturb(rng);
             if (rng.rand() <= exp(logh))
@@ -208,8 +180,7 @@ int Sampler<T>::refresh_particle(int k)
         }
 
         return accepted;
-    }
-
+}
 template<typename T>
 double Sampler<T>::run_to_depth(double nats)
 {
@@ -236,5 +207,4 @@ double Sampler<T>::cal_mse(std::vector<double>& all_lnZ)
 }
 
 } // namespace
-
 #endif
