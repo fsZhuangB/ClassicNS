@@ -6,6 +6,8 @@ int main(void)
   CURL *curl;
   CURLcode res;
  
+  std::string read_buffer;
+
   /* In windows, this will init the winsock stuff */
   curl_global_init(CURL_GLOBAL_ALL);
  
@@ -16,6 +18,9 @@ int main(void)
        just as well be a https:// URL if that is what should receive the
        data. */
     curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:5000/");
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &read_buffer);
+
     /* Now specify the POST data */
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "query=-93.88701485340454&submit=Submit");
     // curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "query=-71.731702257983&submit=Submit");
@@ -30,6 +35,8 @@ int main(void)
  
     /* always cleanup */
     curl_easy_cleanup(curl);
+    std::cout << read_buffer << std::endl;
+
   }
   curl_global_cleanup();
   return 0;
