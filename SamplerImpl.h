@@ -134,8 +134,10 @@ namespace ClassicNS
         // std::cout << "The worst is:";
         // std::cout << worst << std::endl;
         T t(get_val(log_likelihoods[worst]));
+        std::cout << "Before:" << log_likelihoods[worst] << "\n";
         particles[worst] = t;
         log_likelihoods[worst] = t.log_likelihood();
+        std::cout << "After:" << log_likelihoods[worst] << "\n";
         tiebreakers[worst] = rng.rand();
         
         // Do MCMC to refresh the particle
@@ -151,7 +153,7 @@ namespace ClassicNS
         int accepted = 0;
 
         // This is the Metropolis algorithm to sample the prior above the threshold.
-        for (int i = 0; i < num_particles; ++i)
+        for (int i = 0; i < mcmc_steps; ++i)
         {
             T proposal = particles[k];
             double logh = proposal.perturb(rng);
