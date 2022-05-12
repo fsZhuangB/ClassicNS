@@ -70006,5 +70006,5 @@ ln(Z) = 0.807328.
 Initialising sampler.
 Generating 100 particles from the prior...done.
 
-The mse of this model is:14
+The mse of this model is:7.5
 0.807328
